@@ -1,3 +1,5 @@
+
+from flask import Flask, render_template_string, send_from_directory
 import sys
 import os
 import subprocess
@@ -5,7 +7,9 @@ import argparse
 import threading
 import time
 import socket
-from flask import Flask, render_template_string, send_from_directory
+import tempfile
+import shutil
+
 
 keep_alive_time = 0
 shutdown_event = threading.Event()
@@ -125,6 +129,13 @@ def serve_with_flask(html_file, variables, browser_path):
 
     print("Server shutting down...")
 
+def open_as_html(original_path, browser_path):
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_html = os.path.join(tmp, "index.html")
+        shutil.copyfile(original_path, tmp_html)
+        file_url = f"file:///{tmp_html.replace(os.sep, '/')}"
+        open_browser(file_url, browser_path)
+        time.sleep(1)
 
 def main():
     parser = argparse.ArgumentParser(
@@ -189,4 +200,8 @@ def main():
         abs_path = os.path.abspath(html_file)
         file_url = f"file:///{abs_path.replace(os.sep, '/')}"
         print(f"Opening {html_file} in {browser_name.capitalize()}...")
-        open_browser(file_url, browser_path)
+        ext = os.path.splitext(html_file)[1].lower()
+        if ext not in [".html", ".htm"]:
+            open_as_html(file_url, browser_path)
+        else:
+            open_browser(file_url, browser_path)
