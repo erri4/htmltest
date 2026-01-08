@@ -1,6 +1,6 @@
 [project]
 name = "htmltester"
-version = "0.0.4"
+version = "0.0.5"
 description = "Open html files in your browser quickly."
 requires-python = ">=3.8"
 authors = [
