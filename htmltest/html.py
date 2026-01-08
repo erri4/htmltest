@@ -129,7 +129,7 @@ def serve_with_flask(html_file, variables, browser_path):
 
     print("Server shutting down...")
 
-def open_as_html(original_path, browser_path):
+def open_as_html(original_path: str, browser_path: str):
     with tempfile.TemporaryDirectory() as tmp:
         tmp_html = os.path.join(tmp, "index.html")
         shutil.copyfile(original_path, tmp_html)
@@ -197,11 +197,11 @@ def main():
         serve_with_flask(html_file, variables, browser_path)
 
     else:
-        abs_path = os.path.abspath(html_file)
+        abs_path: str = os.path.abspath(html_file)
         file_url = f"file:///{abs_path.replace(os.sep, '/')}"
         print(f"Opening {html_file} in {browser_name.capitalize()}...")
         ext = os.path.splitext(html_file)[1].lower()
         if ext not in [".html", ".htm"]:
-            open_as_html(file_url, browser_path)
+            open_as_html(abs_path.replace(os.sep, '/'), browser_path)
         else:
             open_browser(file_url, browser_path)
